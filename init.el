@@ -9,19 +9,26 @@
 (tool-bar-mode   -1)
 (tooltip-mode    -1)
 (menu-bar-mode   -1)
-(set-fringe-mode 10)
+(set-fringe-mode 20)
 
 ;; Set up the visual bell
 (setq visual-bell t)
 
 ;; Set Font and Fontsize
-(set-face-attribute 'default nil :font "HackNerdFontMono" :height 180)
-
-;; Set Theme
-(load-theme 'wombat)
+(set-face-attribute 'default nil :font "HackNerdFontMono" :height 160)
 
 ;; Make ESC quit prompts
 ;; (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+;; Show Line Numbers
+
+(column-number-mode)
+(global-display-line-numbers-mode t)
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		shell-mode-hook
+		eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;; ---- Packages ----
 
@@ -47,6 +54,12 @@
 
 ;; -- Use packages --
 
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file))
+  :config (setq ivy-initial-inputs-alist nil))
+
 ;; Command Log Mode
 ;;   shows a side panel that records your input
 ;;   along with the function it is binding to.
@@ -54,6 +67,8 @@
 (use-package command-log-mode)
 
 ;; Ivy, a completion framework
+;; If you want to add additional info to ivy
+;;   try ivy-rich package also.
 (use-package ivy
   :diminish
   :bind ( :map ivy-minibuffer-map
@@ -66,6 +81,9 @@
   (ivy-mode 1)
 )
 
+(use-package ivy-rich
+  :init (ivy-rich-mode 1))
+
 ;; Evil, use Vim motion in Emacs
 (use-package evil)
 
@@ -73,6 +91,32 @@
 
 (use-package doom-modeline
   :ensure t
-  :custom ((doom-modeline-height 50))
+  :custom ((doom-modeline-height 40))
   :init (doom-modeline-mode 1)
   )
+
+(use-package doom-themes)
+
+(load-theme 'doom-gruvbox t)
+
+;; Rainbow Delimiters
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; Which Key
+(use-package which-key
+;; Uncomment if you want it on init
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config (setq which-key-idle-delay 1))
+
+;; Helpful: better help
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command ] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key     ] . helpful-key))
