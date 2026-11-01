@@ -17,6 +17,9 @@
 
 ;; Set Font and Fontsize
 (set-face-attribute 'default nil :font "HackNerdFontMono" :height 160)
+;; (set-face-attribute 'fixed-pitch nil :font "HackNerdFontMono" :height 160)
+;; (set-face-attribute 'variable-pitch nil :font "Cambria" :height 160)
+
 
 ;; Make ESC quit prompts
 ;; (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -203,9 +206,56 @@
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
+(defun dw/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 0)
+  (auto-fill-mode 0)
+  (visual-line-mode 1)
+  (setq evil-auto-indent nil))
+
+(use-package org
+  :config
+  (setq org-ellipsis " [v]"
+	org-hide-emphasis-markers t)
+  :hook (org-mode . dw/org-mode-setup))
+
+;; (use-package org-bullet
+;;   :after org
+;;   :hook (org-mode . org-bullets-mode))
+
+(dolist (face '((org-level-1 . 1.5)
+		(org-level-2 . 1.3)
+		(org-level-3 . 1.2)
+		(org-level-4 . 1.1)
+		(org-level-5 . 1.05)
+		(org-level-6 . 1.0)
+		(org-level-7 . 1.0)
+		(org-level-8 . 1.0)
+		))
+;; :font "Cambria"
+  (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))
+
+;; (font-lock-add-keywords 'org-mode
+;; 			'(("^ *\\([-] \[ \]\\) "
+;; 			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⬜")))
+;; 			   ))
+;; 			)
+;; (font-lock-add-keywords 'org-mode
+;; 			'(("^ *\\([-] \[X\]\\) "
+;; 			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "✅")))
+;; 			   ))
+;; 			)
+;; (font-lock-add-keywords 'org-mode
+;; 			'(("^ *\\([-]\\) "
+;; 			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⦁")))
+;; 			   ))
+;; 			)
+
+(use-package smartparens
+  :config (smartparens-global-mode t))
+
 ;; ---- Key Binding ----
 
 ;; Switch window
 (general-define-key
  "M-o" 'ace-window)
-
