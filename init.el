@@ -1,4 +1,3 @@
-
 ;; ---- Clean Up UI ----
 
 ;; Hide the startup message
@@ -27,7 +26,8 @@
 (dolist (mode '(org-mode-hook
 		term-mode-hook
 		shell-mode-hook
-		eshell-mode-hook))
+		eshell-mode-hook
+		pimacs-chat-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;; ---- Packages ----
@@ -56,7 +56,7 @@
 
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
+	 ("C-x b" . counsel-switch-buffer)
 	 ("C-x C-f" . counsel-find-file))
   :config (setq ivy-initial-inputs-alist nil))
 
@@ -85,7 +85,40 @@
   :init (ivy-rich-mode 1))
 
 ;; Evil, use Vim motion in Emacs
-(use-package evil)
+(defun rune/evil-hook ()
+  (dolist (mode '(custom-mode
+		  eshell-mode
+		  git-rebase-mode
+		  erc-mode
+		  circe-server-mode
+		  circe-chat-mode
+		  circe-query-mode
+		  sauron-mode
+		  term-mode
+		  pimacs-chat-mode))
+    (add-to-list 'evil-emacs-state-modes mode)))
+
+(use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  ;; (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
+  :hook (evil-mode . rune/evil-hook)
+  :config
+  (evil-mode 1)
+  ;; (define-key evil-insert-state-map (kbd "C-g") evil-normal-state)
+  ;; (define-key evil-insert-state-map (kbd "C-h") evil-delete-backward-char-and-join)
+  ;; use line motions globally
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
+
+;; (use-package evil-collection
+;;  :after evil
+;;  :config
+;;  (evil-collection-init))
 
 ;; DOOM Modeline
 
@@ -120,3 +153,33 @@
   ([remap describe-command ] . helpful-command)
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key     ] . helpful-key))
+
+(use-package all-the-icons)
+
+(use-package buffer-move)
+(use-package ace-window)
+
+(use-package general)
+
+;; Other cool packages to explore
+;; I'll get used to the existing ones for now
+
+(use-package pimacs)
+
+;; Hydra
+;; can be used to make some cycling
+(use-package hydra)
+(defhydra hydra-text-scale (:timeout 4)
+    "scale text"
+    ("j" text-scale-increase "in")
+    ("k" text-scale-decrease "out")
+    ("f" nil "finished" :exit t)
+)
+;; (use-package swiper)
+
+;; ---- Key Binding ----
+
+;; Switch window
+(general-define-key
+ "M-o" 'ace-window)
+
