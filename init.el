@@ -1,5 +1,7 @@
 ;; ---- Clean Up UI ----
 
+(hl-line-mode t)
+
 ;; Hide the startup message
 (setq inhibit-startup-message t)
 
@@ -104,7 +106,6 @@
   (setq evil-want-keybinding nil)
   ;; (setq evil-want-C-u-scroll t)
   (setq evil-want-C-i-jump nil)
-  :hook (evil-mode . rune/evil-hook)
   :config
   (evil-mode 1)
   ;; (define-key evil-insert-state-map (kbd "C-g") evil-normal-state)
@@ -114,6 +115,7 @@
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
+  (add-hook 'evil-mode-hook #'rune/evil-hook)
 
 ;; (use-package evil-collection
 ;;  :after evil
@@ -166,6 +168,9 @@
 
 (use-package pimacs)
 
+(use-package spacious-padding
+  :init (spacious-padding-mode 1))
+
 ;; Hydra
 ;; can be used to make some cycling
 (use-package hydra)
@@ -176,6 +181,27 @@
     ("f" nil "finished" :exit t)
 )
 ;; (use-package swiper)
+
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/workspace/projects")
+    (setq projectile-project-search-path '("~/workspace/projects")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+(use-package cursory)
+
+(use-package magit
+  :commands (magit-status magit-get-current-branch)
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
 ;; ---- Key Binding ----
 
