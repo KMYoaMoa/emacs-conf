@@ -219,37 +219,34 @@
 	org-hide-emphasis-markers t)
   :hook (org-mode . dw/org-mode-setup))
 
-;; (use-package org-bullet
-;;   :after org
-;;   :hook (org-mode . org-bullets-mode))
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :init
+  (dolist (face '((org-level-1 . 1.3)
+	    (org-level-2 . 1.25)
+	    (org-level-3 . 1.2)
+	    (org-level-4 . 1.15)
+	    (org-level-5 . 1.1)
+	    (org-level-6 . 1.05)
+	    (org-level-7 . 1.0)
+	    (org-level-8 . 1.0)
+	    ))
+  (set-face-attribute (car face) nil :weight 'bold :height (cdr face))))
 
-(dolist (face '((org-level-1 . 1.5)
-		(org-level-2 . 1.3)
-		(org-level-3 . 1.2)
-		(org-level-4 . 1.1)
-		(org-level-5 . 1.05)
-		(org-level-6 . 1.0)
-		(org-level-7 . 1.0)
-		(org-level-8 . 1.0)
-		))
-;; :font "Cambria"
-  (set-face-attribute (car face) nil :weight 'bold :height (cdr face)))
+(font-lock-add-keywords 'org-mode
+			'(("^ *\\([-]\\) "
+			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⦁")))
+			   ))
+			)
 
-;; (font-lock-add-keywords 'org-mode
-;; 			'(("^ *\\([-] \[ \]\\) "
-;; 			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⬜")))
-;; 			   ))
-;; 			)
-;; (font-lock-add-keywords 'org-mode
-;; 			'(("^ *\\([-] \[X\]\\) "
-;; 			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "✅")))
-;; 			   ))
-;; 			)
-;; (font-lock-add-keywords 'org-mode
-;; 			'(("^ *\\([-]\\) "
-;; 			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⦁")))
-;; 			   ))
-;; 			)
+(defun efs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+	visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . efs/org-mode-visual-fill))
 
 (use-package smartparens
   :config (smartparens-global-mode t))
