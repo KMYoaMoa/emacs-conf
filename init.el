@@ -57,7 +57,14 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+;; Get packages that are not in standard libraries
+;; (use-package quelpa-use-package)
+
 ;; -- Use packages --
+
+(use-package eaf
+  :quelpa (eaf :fetcher github :repo "manateelazycat/emacs-application-framework" :files ("*"))
+  :load-path "~/.emacs.d/site-lisp/emacs-application-framework")
 
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
@@ -226,7 +233,7 @@
 	org-agenda-start-with-log-mode t
 	org-log-done 'time
 	org-log-into-drawer t
-	org-agenda-files '("~/workspace/Tasks.org"))
+	org-agenda-files '("~/workspace/Academic.org"))
   :hook (org-mode . efs/org-mode-setup))
 
 (use-package org-bullets
@@ -255,11 +262,18 @@
 	visual-fill-column-center-text t)
   (visual-fill-column-mode 1))
 
+(use-package org-pomodoro)
+
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
 (use-package smartparens
   :config (smartparens-global-mode t))
+
+(use-package markdown-mode)
+(use-package markdown-mermaid)
+
+(use-package tuareg)
 
 ;; ---- Key Binding ----
 
