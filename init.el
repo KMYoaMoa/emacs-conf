@@ -117,13 +117,13 @@
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
-  (add-hook 'evil-mode-hook #'rune/evil-hook)
+  (evil-set-initial-state 'dashboard-mode 'normal)
+  :hook (evil-mode . rune/evil-hook))
 
-;; (use-package evil-collection
-;;  :after evil
-;;  :config
-;;  (evil-collection-init))
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
 ;; DOOM Modeline
 
@@ -199,25 +199,29 @@
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
 
-(use-package cursory)
-
 (use-package magit
   :commands (magit-status magit-get-current-branch)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-(defun dw/org-mode-setup ()
+(defun efs/org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 0)
-  (auto-fill-mode 0)
+  ;; This would create a new line to wrap the line
+  ;; another way to do wrapping is to use visual fill 
+  (auto-fill-mode 0) 
   (visual-line-mode 1)
   (setq evil-auto-indent nil))
 
 (use-package org
   :config
   (setq org-ellipsis " [v]"
-	org-hide-emphasis-markers t)
-  :hook (org-mode . dw/org-mode-setup))
+	org-hide-emphasis-markers t
+	org-agenda-start-with-log-mode t
+	org-log-done 'time
+	org-log-into-drawer t
+	org-agenda-files '("~/workspace/Tasks.org"))
+  :hook (org-mode . efs/org-mode-setup))
 
 (use-package org-bullets
   :after org
@@ -235,13 +239,13 @@
   (set-face-attribute (car face) nil :weight 'bold :height (cdr face))))
 
 (font-lock-add-keywords 'org-mode
-			'(("^ *\\([-]\\) "
-			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⦁")))
-			   ))
-			)
+    '(("^ *\\([-]\\) "
+	(0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "⦁")))
+	))
+    )
 
 (defun efs/org-mode-visual-fill ()
-  (setq visual-fill-column-width 100
+  (setq visual-fill-column-width 80
 	visual-fill-column-center-text t)
   (visual-fill-column-mode 1))
 
