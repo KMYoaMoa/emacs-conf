@@ -32,7 +32,7 @@
 		term-mode-hook
 		shell-mode-hook
 		eshell-mode-hook
-		pimacs-chat-mode-hook))
+		agent-shell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;; ---- Packages ----
@@ -93,16 +93,15 @@
 (defun rune/evil-hook ()
   (dolist (mode '(custom-mode
 		  eshell-mode
+		  agent-shell-mode
 		  git-rebase-mode
 		  erc-mode
 		  circe-server-mode
 		  circe-chat-mode
 		  circe-query-mode
 		  sauron-mode
-		  term-mode
-		  pimacs-chat-mode))
-    (setq 'evil-insert-state-modes (delq mode 'evil-insert-state-modes))
-    (add-to-list 'evil-emacs-state-modes mode)))
+		  term-mode))
+    (evil-set-initial-state mode 'emacs)))
 
 (use-package evil
   :init
@@ -170,7 +169,13 @@
 ;; Other cool packages to explore
 ;; I'll get used to the existing ones for now
 
-(use-package pimacs)
+(use-package agent-shell
+    :ensure t
+    ;; :ensure-system-package
+    ;; ;; Add agent installation configs here
+    ;; ((claude . "brew install claude-code")
+    ;;  (claude-agent-acp . "npm install -g @agentclientprotocol/claude-agent-acp"))
+    )
 
 (use-package spacious-padding
   :init (spacious-padding-mode 1))
