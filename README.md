@@ -1,11 +1,5 @@
 # Kareno Akatsuki's Emacs Configuration
 
-This is my emacs configuration.
+`config.org`: the org mode file that generates the config file.
 
-## Backgroud
-
-I use Emacs because I have both Windows laptop (in which I have linux installed) and MacBook. So I thought it would be nice if I could have a unified workflow on both machines, so that I can switch between them seamlessly.
-
-I'm also a fan of the concept that controlling everything with keyboard, and I'm already a big fan of Vim and i3wm. I will hate that if I cannot do the same on my new MacBook.
-
-So why not Emacs? Where I can basically do everything with it.
+`init.el`: the actual config file

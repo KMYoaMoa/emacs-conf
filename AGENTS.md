@@ -7,7 +7,11 @@ Guidance for AI agents / assistants working in this repository.
 **This repo is the first and primary source of fact.**
 
 - Answer questions, diagnose issues, and make changes based on the files in this
-  repo (first and foremost `init.el`).
+  repo (first and foremost `config.org`).
+- `init.el` is **generated** from `config.org` via Org Babel tangling (see the
+  `#+PROPERTY: header-args:emacs-lisp :tangle ./init.el` line at the top of
+  `config.org`). Treat `config.org` as the source and `init.el` as a build
+  artifact.
 - When repo content and any installed/runtime copy disagree, **treat the repo as
   correct** and say so explicitly. Divergence is itself a finding worth reporting.
 - Do not infer the user's intent from what happens to be installed on the machine.
@@ -27,14 +31,30 @@ Guidance for AI agents / assistants working in this repository.
   (e.g. "check my installed config", "why is my installed init different").
   If the request is ambiguous, ask before reading.
 
+## Hard rule: edit `config.org`, never `init.el`
+
+- When updating the configuration, **always edit `config.org`** and then
+  re-tangle to regenerate `init.el`.
+- **Never** edit `init.el` directly: any change made there is lost the next time
+  the file is tangled.
+- If `init.el` and `config.org` disagree, `config.org` wins and `init.el` is
+  stale — re-tangle instead of hand-patching `init.el`.
+- Reading `init.el` is fine (e.g. to see what was generated, or to diff), but it
+  is never the place to make a change.
+
 ## Consequences / working style
 
 - To reproduce or validate behavior, load files from this repo, e.g.:
   `emacs -Q --batch -l init.el --eval '...'`
   Do not fall back to `~/.emacs.d/init.el`.
+- To regenerate `init.el` after editing `config.org`, tangle the Org file, e.g.:
+  `emacs --batch config.org -f org-babel-tangle`
+  (or `C-c C-v t` in an interactive Emacs session). Tangle **before** running
+  `make install`, because `make install` deploys `init.el` as-is.
 - If a diagnosis seems to require the installed copy, state the assumption you
   are making from the repo and ask the user for permission instead of peeking.
 - Prefer explaining over editing when the user says "explain, don't edit".
-- Residual files in the repo such as `#init.el#`, `.#init.el`, `init.el~` are
-  editor artifacts; never treat them as configuration. `init.el` is the file that
-  matters, and `make install` deploys it to `$(HOME)/.emacs.d`.
+- Residual files in the repo such as `#init.el#`, `.#init.el`, `init.el~` (and
+  their `config.org` equivalents) are editor artifacts; never treat them as
+  configuration. `config.org` is the file that matters, `init.el` is its tangled
+  output, and `make install` deploys `init.el` to `$(HOME)/.emacs.d`.

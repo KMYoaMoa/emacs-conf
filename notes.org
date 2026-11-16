@@ -1,0 +1,195 @@
+* Emacs Learning Notes
+
+** Introduction
+
+This file contains my notes when learning Emacs.
+
+** Souces
+
+
+
+* Learning GNU Emacs (3rd Edition)
+
+** Preface
+
+*** GNU Emacs and the Free Software Foundation
+
+Emacs was first a set of macros for TECO, and then rewritten.
+
+Emacs = Editing Macros
+
+*** How to Learn & Contents
+
+Basics: Chapter 1-3
+Program and System Manage: Chapter 4-5, 9-12
+Writer & Production: Chapter 7-8, 14
+Customizing: Chapter 10, 11
+OS Commands: Chapter 5
+Emacs on Mac OS: Chapter 13
+
+Buffers, Windows, Frames: Chapter 4
+Word Abbreviation Mode: Chapter 3
+Macros: Chapter 6
+Key Mapping: Chapter 10
+File Organization: Chapter 5
+TEX, LATEX: Chapter 8
+Emacs Lisp: Chapter 11
+Chapter 14: Help System
+
+** Emacs Basics
+
+*** Files and Buffers
+
+You are not editting files with Emacs.
+
+Emacs copies the contents of the file to a temporary buffer, and you are editting the buffer.
+
+The file doesn't change until you save the buffer. 
+
+*** File Operations
+
+A temporary buffer under the modeline is called the /minibuffer/.
+
+You already know that you can open a file with ~C-x C-f~, but you may not know that you can also do this with ~C-x C-v~. This will put the current file name in the minibuffer when you are searching for file. 
+
+When you are searching for a file, the "current directory" comes from the current buffer.
+
+To Save a file, you can use ~C-x C-w~, representing ~write-file~. This means "Save as" and will let you to specify a file name. If you just press Enter, then it is the same as ~C-x C-s~.
+
+*** Modes
+
+The behavior in different modes are different. It makes Emacs senstitive to what you are doing.
+
+Major Mode and Minor Mode:
+
+A buffer can be in only one major mode at a time. Here are some common modes:
+
+| Mode          | Function                |
+| Fundamental   | Default                 |
+| Text          | Writing                 |
+| View          | Read Only               |
+| Shell         | Running a Shell         |
+| Outline       | Writing Outlines        |
+| Indented Text | Automatically Indenting |
+| Picture       | Creating ASCII Drawings |
+| LaTeX         | Formatting Tex Files    |
+| Compilation   | Compiling Programs      |
+
+Emacs will detect the extension of the file to put you into the correct major mode.
+
+There are also minor modes: defining a particular aspect of Emacs's behavior and can be turn on and off.
+
+| Mode      | Function               |
+| Auto-fill | Enables Word Wrap      |
+| Overwrite | Replacing Characters   |
+| Auto-save | rt                     |
+| Isearch   | Searching              |
+| Flyspell  | spell checker          |
+| Abbrev    | Use word abbreviations |
+| Refill    | fill paragraphs        |
+| Artist    | Create ASCII Drawings  |
+| Outline   | ...                    |
+
+Some modes are both major modes and monor modes. This allow these mode to be used alone as major mode or to be used with other major modes as minor mode.
+
+
+*** Menu
+
+You can use ~M-`~ to open text based menu ** Editing
+
+** Buffers Windows Frames
+
+Frames = GUI Windows
+Windows = Split Screens
+
+** Bookmark
+
+~C-x r m~ for ~bookmark-set~
+~C-x r b~ for ~bookmark-jump~
+
+Also, there are commands for ~bookmark-rename~ and ~bookmark-delete~
+
+** Command Execution
+	
+To run a command without opening a terminal, you can use:
+
+~M-!~ (Meta+Shift+1) for ~shell-command~
+
+~M-|~ (Meta+Shift+\) for ~shell-command-on-region~, which pipes the selected region to stdin.
+
+By adding ~C-u~ before them, we can directly put the output into buffer
+
+** Key Mapping
+
+*** Concepts
+
+A Keymap is a collection of key bindings.
+
+The basic default key bindings in emacs are kept in ~global-map~.
+
+Another concept is /local keymap/, used to implement commands in modes. Different modes has its own keymap, installs as the local map when invoked.
+
+There are some reserved keymaps.
+
+ctl-x-map for ~C-x ...~
+esc-map for ~ESC ...~
+
+*** How to set keys
+
+#+begin_src emacs-lisp
+;; General
+(define-key keymap "keystroke" 'command-name)
+
+;; set to global map only
+(global-set-key "keystroke" 'command-name)
+;; eq to
+(define-key global-map "keystroke" 'command-name)
+
+;; binds to the local map of current buffer
+;; used for temporary key bindings
+(local-set-key "keystroke" 'command-name)
+#+end_src
+
+Examples
+
+#+begin_src emacs-lisp
+
+;; All these 3 are equivalant
+(global-set-key "C-x l" 'goto-line)
+(define-key global-map "C-x l" 'goto-line)
+(define-key ctl-x-map "l" 'goto-line)
+
+#+end_src
+
+*** How to unset keys
+
+#+begin_src emacs-lisp
+(global-unset-key "some key") 
+(define-key some-map "some key" nil)
+#+end_src
+
+** Intro to Lisp
+
+#+begin_src emacs-lisp
+(setq var-a val-a
+      var-b val-b
+      var-c val-c)
+#+end_src
+
+#+begin_src emacs-lisp
+(defun say-hi () (interactive)(message "hello!"))
+(aaa)
+#+end_src
+
+
+* Learning Elisp
+
+Equal condition:
+
+#+begin_src emacs-lisp
+;; there are 3 types of equal functions
+(eq 1 1) ;; object level equal
+(eql 1 1) ;; same object or same number
+(equal 1 1) ;; equivalent
+;; also, there are type-specific equal
+#+end_src
